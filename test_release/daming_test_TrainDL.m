@@ -60,14 +60,7 @@ t=toc;
 fprintf('time of computation for Dictionary Learning: %f\n',t);
 fprintf('Evaluating cost function...\n');
 alpha=mexLasso(X,D,param);
-%% Show first 20 2-digit images
-figure('Name','2nd exp')
-for i=1:20
-    fprintf('%d. Hello world!\n', i);
-    subplot(4,5,i)
-    row1matfull = full(reshape(alpha(i,:),[],56));
-    imshow(row1matfull);
-end
+
 % R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
 % fprintf('objective function: %f\n',R);
 tic
@@ -83,11 +76,20 @@ alpha=mexLasso(X,D,param);
 R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
 fprintf('objective function: %f\n',R);
 
+%% Show first 20 2-digit images
+figure('Name','2nd exp')
+for i=1:20
+    fprintf('%d. Hello world!\n', i);
+    subplot(4,5,i)
+    row1matfull = full(reshape(alpha(i,:),[],56));
+    imshow(row1matfull);
+end
+
 % let us add sparsity to the dictionary itself
 fprintf('*********** THIRD EXPERIMENT ***********\n');
 param.modeParam=0;
 param.iter=1000;
-param.gamma1=0.3;
+param.gamma1=0.15;
 param.modeD=1;
 tic
 [D] = mexTrainDL(X,param);
@@ -111,29 +113,30 @@ end
 % imagesc(ImD); colormap('gray');
 % drawnow;
 
-fprintf('*********** FOURTH EXPERIMENT ***********\n');
-param.modeParam=0;
-param.iter=1000;
-param.gamma1=0.3;
-param.modeD=3;
-tic
-[D] = mexTrainDL(X,param);
-t=toc;
-fprintf('time of computation for Dictionary Learning: %f\n',t);
-fprintf('Evaluating cost function...\n');
-alpha=mexLasso(X,D,param);
-R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
-fprintf('objective function: %f\n',R);
-tic
-%% Show first 20 2-digit images
-figure('Name','4th exp')
-for i=1:20
-    fprintf('%d. Hello world!\n', i);
-    subplot(4,5,i)
-    row1matfull = full(reshape(alpha(i,:),[],56));
-    imshow(row1matfull);
-end
-sigma=0.0;
+return;
+% fprintf('*********** FOURTH EXPERIMENT ***********\n');
+% param.modeParam=0;
+% param.iter=1000;
+% param.gamma1=0.3;
+% param.modeD=3;
+% tic
+% [D] = mexTrainDL(X,param);
+% t=toc;
+% fprintf('time of computation for Dictionary Learning: %f\n',t);
+% fprintf('Evaluating cost function...\n');
+% alpha=mexLasso(X,D,param);
+% R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
+% fprintf('objective function: %f\n',R);
+% tic
+% %% Show first 20 2-digit images
+% figure('Name','4th exp')
+% for i=1:20
+%     fprintf('%d. Hello world!\n', i);
+%     subplot(4,5,i)
+%     row1matfull = full(reshape(alpha(i,:),[],56));
+%     imshow(row1matfull);
+% end
+% sigma=0.0;
 % subplot(1,3,3);
 % ImD=displayPatches(D);
 % imagesc(ImD); colormap('gray');
