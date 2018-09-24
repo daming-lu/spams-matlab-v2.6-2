@@ -17,7 +17,7 @@ X=X';
 param.K=20;  % learns a dictionary with 100 elements
 param.lambda=0.15;
 param.numThreads=-1; % number of threads
-param.batchsize=10;
+param.batchsize=5;
 param.verbose=false;
 
 param.iter=1000;  % let us see what happens after 1000 iterations.
@@ -38,7 +38,7 @@ ImD = D;
 %% Show first 20 2-digit images
 figure('Name','1st exp')
 for i=1:20
-    fprintf('%d. Hello world!\n', i);
+%     fprintf('%d. Hello world!\n', i);
     subplot(4,5,i)
     row1matfull = full(reshape(alpha(i,:),[],56));
     imshow(row1matfull);
@@ -79,7 +79,7 @@ fprintf('objective function: %f\n',R);
 %% Show first 20 2-digit images
 figure('Name','2nd exp')
 for i=1:20
-    fprintf('%d. Hello world!\n', i);
+%     fprintf('%d. Hello world!\n', i);
     subplot(4,5,i)
     row1matfull = full(reshape(alpha(i,:),[],56));
     imshow(row1matfull);
@@ -91,7 +91,36 @@ param.modeParam=0;
 param.iter=1000;
 param.gamma1=0.15;
 param.modeD=1;
+
 tic
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% X1=X(:,1:floor(size(X,2)/10));
+% X2=X(:,floor(size(X,2)/10):end);
+% param.iter=1000;
+% tic
+% [D model] = mexTrainDL(X1,param);
+% t=toc;
+% fprintf('time of computation for Dictionary Learning: %f\n',t);
+% fprintf('Evaluating cost function...\n');
+% alpha=mexLasso(X,D,param);
+% 
+% % R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
+% % fprintf('objective function: %f\n',R);
+% tic
+% % Then reuse the learned model to retrain a few iterations more.
+% param2=param;
+% param2.D=D;
+% [D model] = mexTrainDL(X2,param2,model);
+% %[D] = mexTrainDL(X,param);
+% t=toc;
+% fprintf('time of computation for Dictionary Learning: %f\n',t);
+% fprintf('Evaluating cost function...\n');
+% alpha=mexLasso(X,D,param);
+% R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
+% fprintf('objective function: %f\n',R);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 [D] = mexTrainDL(X,param);
 t=toc;
 fprintf('time of computation for Dictionary Learning: %f\n',t);
@@ -100,10 +129,11 @@ alpha=mexLasso(X,D,param);
 R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
 fprintf('objective function: %f\n',R);
 tic
+
 %% Show first 20 2-digit images
 figure('Name','3rd exp')
 for i=1:20
-    fprintf('%d. Hello world!\n', i);
+%     fprintf('%d. Hello world!\n', i);
     subplot(4,5,i)
     row1matfull = full(reshape(alpha(i,:),[],56));
     imshow(row1matfull);
