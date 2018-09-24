@@ -13,12 +13,16 @@ X=X';
 
 %% Create noisy data
 A=[];
+% sigma=0.25;
 sigma=0.25;
+
 for l=1:10
     X1=X+sigma*abs(randn(size(X)));  %--Absolute Gaussian noise
    %X1=X+mat2gray(poissrnd(sigma,size(X))); %--Poisson Noise
     A=[A;X1];
 end
+
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
 %% UoI_NMF
 %--Parameters
 params.k=20;       % Rank k of the factorization
@@ -41,7 +45,7 @@ nnzH1=median(sum(abs(H1)>0.05,2));
 Aest=W1*H1;
 %%--plot basis and bases quality
 figure()
-for i=1:16
+for i=1:20
     subplot(5,4,i)
      H11(i,:)=mat2gray(H1(i,:));
      imshow((reshape(H11(i,:),[],56)));
@@ -99,7 +103,7 @@ er1=norm(X-Wnew1*H1,'fro')  %% reconstruction error with original data
 param.K=20;  % learns a dictionary with 100 elements
 param.lambda=0.15;
 param.numThreads=-1; % number of threads
-param.batchsize=5;
+param.batchsize=15;
 param.verbose=false;
 
 param.iter=1000;  % let us see what happens after 1000 iterations.
@@ -118,8 +122,10 @@ tic
 t=toc;
 fprintf('time of computation for Dictionary Learning: %f\n',t);
 fprintf('Evaluating cost function...\n');
-alpha=mexLasso(X,D,param);
-R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
+% alpha=mexLasso(X,D,param);
+alpha=mexLasso(A,D,param);
+% R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
+R=mean(0.5*sum((A-D*alpha).^2)+param.lambda*sum(abs(alpha)));
 fprintf('objective function: %f\n',R);
 tic
 
@@ -127,7 +133,7 @@ tic
 figure('Name','2-D MNIST dictionary atoms')
 for i=1:20
 %     fprintf('%d. Hello world!\n', i);
-    subplot(4,5,i)
+    subplot(5,4,i)
     row1matfull = full(reshape(alpha(i,:),[],56));
     imshow(row1matfull);
 end
@@ -138,7 +144,7 @@ Aest=D*alpha;
 alpha = full(alpha);
 %%--plot basis and bases quality
 figure()
-for i=1:16
+for i=1:20
     subplot(5,4,i)
      alpha1(i,:)=mat2gray(alpha(i,:));
      imshow((reshape(alpha1(i,:),[],56)));
@@ -148,6 +154,7 @@ C1=normc(alpha*Hopt');
 [corr1,id1]=max(C1,[],2);
 
 Hl1=[];j1=[];
+k=size(Hopt,1);
 for j=1:k
     i1=find(id1==j);
     if numel(i1)==0
@@ -184,8 +191,8 @@ eer1=norm(A-Aest,'fro') %% reconstruction error with noisy data
 
 
 for l=1:size(X)
-    Wnew1(l,:)= lsqnonneg(H1',X(l,:)')';
+    Wnew1(l,:)= lsqnonneg(alpha',X(l,:)')';
 end
 
-er1=norm(X-Wnew1*H1,'fro')  %% reconstruction error with original data
+er1=norm(X-Wnew1*alpha,'fro')  %% reconstruction error with original data
 return;
