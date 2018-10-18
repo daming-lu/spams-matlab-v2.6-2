@@ -1,6 +1,6 @@
-% clear all; 
-% clc
-% close all
+clear all; 
+clc
+close all
 
 % I=double(imread('data/lena.png'))/255;
 I=double(imread('lena.png'))/255;
@@ -29,7 +29,7 @@ X = A;
 
 param.K=20;  % learns a dictionary with 100 elements
 param.lambda=0.15;
-param.lambda=0.09;
+param.lambda=0.04;
 param.numThreads=-1; % number of threads
 param.batchsize=5;
 param.verbose=false;
@@ -81,50 +81,50 @@ end
 %%-- Correlation with the exact bases
 C1=normc(H11*Hopt');
 [corr1,id1]=max(C1,[],2);
-
-Hl1=[];j1=[];
-for j=1:k
-    i1=find(id1==j);
-    if numel(i1)==0
-        j1=[j1;j];
-        continue;
-    elseif numel(i1)==1
-        rms1(j,1)=mean((H11(i1,:)-Hopt(j,:)).^2,2);
-    else
-        [~,i2]=max(corr1(i1));
-        rms1(j,1)=mean((H11(i1(i2),:)-Hopt(j,:)).^2,2);
-        Hl1=[Hl1;H11(setdiff(i1,i1(i2)),:)];
-    end
-end
-
-
-figure()
-plot(sort(abs(corr1)),'r*-')
-% legend('Online Dictionary Learning')
-hold on
-
-plot(sort(abs(corr1_uoi)),'bo-')
-legend('Online Dictionary Learning', 'UoI-NMF')
-
-xlabel('Bases')
-ylabel('Correlation with exact bases')
-title('Correlation between exact and learned bases')
-hold off
-%
-%
-figure()
-plot(sort(rms1),'r*-')
-% legend('Online Dictionary Learning')
-
-hold on
-
-plot(sort(rms1_uoi),'bo-')
-legend('Online Dictionary Learning', 'UoI-NMF')
-
-xlabel('Bases')
-ylabel('Mean Squared Error')
-title('Mean Squared Error between exact and learned bases')
-hold off
+% 
+% Hl1=[];j1=[];
+% for j=1:k
+%     i1=find(id1==j);
+%     if numel(i1)==0
+%         j1=[j1;j];
+%         continue;
+%     elseif numel(i1)==1
+%         rms1(j,1)=mean((H11(i1,:)-Hopt(j,:)).^2,2);
+%     else
+%         [~,i2]=max(corr1(i1));
+%         rms1(j,1)=mean((H11(i1(i2),:)-Hopt(j,:)).^2,2);
+%         Hl1=[Hl1;H11(setdiff(i1,i1(i2)),:)];
+%     end
+% end
+% 
+% 
+% figure()
+% plot(sort(abs(corr1)),'r*-')
+% % legend('Online Dictionary Learning')
+% hold on
+% 
+% plot(sort(abs(corr1_uoi)),'bo-')
+% legend('Online Dictionary Learning', 'UoI-NMF')
+% 
+% xlabel('Bases')
+% ylabel('Correlation with exact bases')
+% title('Correlation between exact and learned bases')
+% hold off
+% %
+% %
+% figure()
+% plot(sort(rms1),'r*-')
+% % legend('Online Dictionary Learning')
+% 
+% hold on
+% 
+% plot(sort(rms1_uoi),'bo-')
+% legend('Online Dictionary Learning', 'UoI-NMF')
+% 
+% xlabel('Bases')
+% ylabel('Mean Squared Error')
+% title('Mean Squared Error between exact and learned bases')
+% hold off
 
 %---- Error calculation
 
